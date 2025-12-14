@@ -1,0 +1,5 @@
+.venv/
+weaviate_data/
+__pycache__/
+*.pyc
+.env

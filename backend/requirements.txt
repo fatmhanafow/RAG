@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+weaviate-client
+sentence-transformers
+python-multipart
+pydantic
+requests
+gradio
+pdfplumber
+python-dotenv
