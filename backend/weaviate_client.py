@@ -1,54 +1,55 @@
 # backend/weaviate_client.py
-import weaviate
-import os
+import faiss
+import numpy as np
 
-WEAVIATE_URL = os.getenv("WEAVIATE_URL", "http://localhost:8080")
+class LocalVectorDB:
 
-client = weaviate.Client(url=WEAVIATE_URL)
+    def __init__(self, dim=1024):
+        self.dim = dim
+        self.index = faiss.IndexFlatIP(dim)  # inner product ~ cosine similarity
+        self.texts = []  # نگهداری متن‌ها برای بازیابی
+        print("LocalVectorDB initialized.")
 
-CLASS_NAME = "DocumentChunk"
+    def create_schema(self):
+        """
+        در FAISS نیازی به schema نیست ولی interface مشابه قبلی حفظ شد
+        """
+        self.index.reset()
+        self.texts = []
+        print("Schema created (LocalVectorDB reset).")
 
+    def index_chunks(self, chunks):
+        """
+        chunks: list of dicts: {"id":str, "text":str, "vector": list[float], "source":str}
+        """
+        vectors = np.array([c["vector"] for c in chunks]).astype("float32")
+        self.index.add(vectors)
+        self.texts.extend([c["text"] for c in chunks])
+        print("Indexed", len(chunks))
+
+    def query_top_k(self, query_vector, k=5):
+        """
+        query_vector: numpy array (dim,) یا (1, dim)
+        return: list of dicts {"text":..., "source":""} شبیه weaviate
+        """
+        if query_vector.ndim == 1:
+            query_vector = query_vector.reshape(1, -1)
+        D, I = self.index.search(query_vector.astype("float32"), k)
+        results = []
+        for idx in I[0]:
+            if idx < len(self.texts):
+                results.append({"text": self.texts[idx], "source": ""})
+        return results
+
+# global client instance (مثل weaviate)
+vector_db = LocalVectorDB(dim=1024)
+
+# wrapper functions مشابه interface weaviate
 def create_schema():
-    schema = {
-        "classes": [
-            {
-                "class": CLASS_NAME,
-                "description": "Text chunks from uploaded documents",
-                "properties": [
-                    {"name": "text", "dataType": ["text"]},
-                    {"name": "source", "dataType": ["text"]},
-                ],
-            }
-        ]
-    }
-    # حذف کلاس اگر وجود دارد (برای توسعه)
-    if client.schema.contains({"class": CLASS_NAME}):
-        try:
-            client.schema.delete_class(CLASS_NAME)
-        except Exception:
-            pass
-    client.schema.create_class(schema["classes"][0])
-    print("Schema created.")
+    vector_db.create_schema()
 
 def index_chunks(chunks):
-    """
-    chunks: list of dicts: {"id":str, "text":str, "vector": list[float], "source":str}
-    """
-    with client.batch as batch:
-        batch.batch_size = 50
-        for c in chunks:
-            props = {"text": c["text"], "source": c.get("source","")}
-            client.batch.add_data_object(data_object=props, class_name=CLASS_NAME, vector=c["vector"])
-    print("Indexed", len(chunks))
+    vector_db.index_chunks(chunks)
 
 def query_top_k(query_vector, k=5):
-    result = client.query.get(CLASS_NAME, ["text", "source"]).with_near_vector({"vector": query_vector}).with_limit(k).do()
-    # parse
-    hits = []
-    try:
-        for h in result["data"]["Get"][CLASS_NAME]:
-            # score not directly returned if we pass explicit vector; weaviate supports with_distance
-            hits.append({"text": h["text"], "source": h.get("source","")})
-    except Exception:
-        pass
-    return hits
+    return vector_db.query_top_k(query_vector, k=k)
