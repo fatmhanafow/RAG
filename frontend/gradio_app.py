@@ -5,16 +5,32 @@ import requests
 BACKEND = "http://localhost:8000"
 
 def upload_and_index(file):
-    files = {"file": open(file.name, "rb")}
-    r = requests.post(f"{BACKEND}/upload", files=files)
-    return r.json()
+    try:
+        files = {"file": open(file.name, "rb")}
+        r = requests.post(f"{BACKEND}/upload", files=files)
+        j = r.json()
+    except Exception as e:
+        return f"Upload failed: {e}"
+
+    if not j.get("indexed", False):
+        return f"Upload OK ({j.get('chunks_indexed',0)} chunks) — WARNING: not indexed (Weaviate not connected)."
+    return f"Upload & index successful: {j.get('chunks_indexed',0)} chunks indexed."
+
 
 def search_query(query):
-    data = {"q": query, "k": 5}
-    r = requests.post(f"{BACKEND}/search", data=data)
-    res = r.json()
+    try:
+        data = {"q": query, "k": 5}
+        r = requests.post(f"{BACKEND}/search", data=data)
+        res = r.json()
+    except Exception as e:
+        return f"Search failed: {e}"
+
+    results = res.get("results", [])
+    if not results:
+        return "No results found. Make sure documents are indexed and Weaviate is running."
+
     out = ""
-    for i, h in enumerate(res.get("results", []), 1):
+    for i, h in enumerate(results, 1):
         out += f"---- RANK {i} ----\nSource: {h.get('source','')}\n{h.get('text')}\n\n"
     return out
 
@@ -32,4 +48,5 @@ with gr.Blocks() as demo:
     search_btn.click(search_query, inputs=[query], outputs=[output])
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860)
+    demo.launch(server_port=8002)
+

@@ -1,5 +1,15 @@
+# virtual environments
+venv/
 .venv/
-weaviate_data/
+
+# python cache
 __pycache__/
 *.pyc
+.pytest_cache/
+
+# env
 .env
+
+# weaviate runtime data
+weaviate_data/
+weaviate_data.bak/

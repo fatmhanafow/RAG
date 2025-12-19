@@ -1,14 +1,21 @@
+# backend/embedder.py
 from sentence_transformers import SentenceTransformer
-import torch
+import numpy as np
+
+
+MODEL_NAME = "all-MiniLM-L6-v2" 
+model = SentenceTransformer(MODEL_NAME)
+
+
+def embed_texts(texts, batch_size=32):
+    # texts: list[str]
+    embs = model.encode(texts, batch_size=batch_size, show_progress_bar=True, convert_to_numpy=True, normalize_embeddings=True)
+    # returns list of vectors
+    return [e.tolist() for e in embs]
 
 class Embedder:
     def __init__(self):
-        torch.set_num_threads(8)
-        self.model = SentenceTransformer("BAAI/bge-m3", device="cpu")
+        pass
 
-    def encode(self, texts, batch_size=8):
-        """
-        texts: لیست string
-        برمی‌گرداند: numpy array با ابعاد (len(texts), 1024)
-        """
-        return self.model.encode(texts, normalize_embeddings=True, batch_size=batch_size)
+    def encode(self, texts, batch_size=32):
+        return embed_texts(texts, batch_size=batch_size)

@@ -1,6 +1,6 @@
 fastapi
 uvicorn[standard]
-weaviate-client
+weaviate-client>=4.18.3
 sentence-transformers
 python-multipart
 pydantic
