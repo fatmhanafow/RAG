@@ -1,28 +1,26 @@
-# Local RAG System
+<h1 align="center" style="color:#4B9CD3;">🤖 Local RAG System</h1>
+<p align="center">
+A <strong>production-ready local Retrieval-Augmented Generation (RAG) chatbot</strong> for TXT/PDF uploads, delivering precise, context-grounded answers. Persian OCR & multilingual support included.
+</p>
 
-A production-ready local Retrieval-Augmented Generation (RAG) chatbot that allows users to upload TXT or PDF documents and receive precise, context-grounded answers based strictly on the uploaded content.
+---
 
-The system supports Persian scanned PDFs through OCR, multilingual querying (Persian & English), streaming token-by-token responses, and automatic knowledge reset on new uploads to prevent cross-document interference.
+## 🔹 Highlights
 
-This project is designed with modular architecture, semantic search optimization, and RTL-safe UI rendering.
+| Feature | Description |
+|---------|-------------|
+| 📝 Persian OCR | Supports scanned PDFs (Tesseract `fas`) |
+| 🌐 Multilingual | Persian ↔ English queries |
+| ⚡ Streaming | Token-by-token chat responses |
+| 🔄 Knowledge Reset | Automatic on each new upload |
+| 🖥️ RTL UI | Fully Streamlit-supported RTL rendering |
+| 🧩 Modular | Separation of retrieval & generation pipelines |
 
-## Overview
+---
 
-This system implements an end-to-end RAG pipeline:
+## 🏗️ Architecture
 
-1. Document ingestion (PDF / TXT / OCR)  
-2. Text extraction and preprocessing  
-3. Chunking with overlap  
-4. Embedding generation  
-5. Vector indexing (local)  
-6. Semantic retrieval (configurable top-k)  
-7. LLM-based answer generation  
-8. Streaming response rendering  
-
-It supports Persian RTL text rendering without corrupting embeddings or retrieval quality.
-
-## Architecture
-```
+```text
 User
 ↓
 Streamlit UI (RTL-safe)
@@ -30,138 +28,154 @@ Streamlit UI (RTL-safe)
 FastAPI Backend
 ├── Document Upload
 ├── OCR (if scanned PDF)
-├── Chunking (with overlap)
+├── Chunking (overlap)
 ├── Embedding Generation
 ├── Weaviate Vector Storage
 ├── Semantic Retrieval (top-k)
 └── LLM Query (Qwen3-32B API)
 ↓
 Streaming Token-by-Token Response
-```
-**Architectural Highlights**
+````
 
-- Clean separation between retrieval and generation layers
-- Modular embedding and vector storage pipeline
-- Session-level knowledge reset
-- Designed for scalability (tested with 3000+ chunks)
-- Logging-ready structure for observability and debugging
+**Key Points:**
 
-## Key Features
+* 🎯 Retrieval & generation separated
+* 🔗 Modular pipeline
+* 📈 Scalable (3000+ chunks)
+* 🛠️ Logging-ready
 
-- Persian OCR support for scanned/image-based PDFs (Tesseract `fas`)
-- Multi-file upload (up to 20 TXT/PDF files per batch)
-- Overlapping semantic chunking strategy
-- Lightweight 384-dimension embeddings (MiniLM)
-- Local vector search with configurable top-k
-- Streaming chat responses (token-by-token like ChatGPT)
-- Automatic knowledge reset before each new upload
-- Multilingual support (Persian question → English document answer and vice versa)
-- Tested scalability (3000+ chunks without noticeable degradation)
-- Fully RTL-supported Streamlit UI for Persian
+---
 
-## Tech Stack
+## ✨ Key Features
 
-**Backend**  
-- FastAPI — Main API service and streaming responses  
-- Weaviate v4 — Local vector database  
-- Sentence-Transformers (`all-MiniLM-L6-v2`) — 384-dimension embedding model  
+<div align="center">
 
-**Frontend**  
-- Streamlit — Interactive UI with full RTL support and streaming chat  
+| Icon | Feature         | Description                            |
+| ---- | --------------- | -------------------------------------- |
+| 📝   | Persian OCR     | Tesseract `fas` for scanned/image PDFs |
+| 📂   | Multi-file      | Upload up to 20 files per batch        |
+| 🔗   | Chunking        | Overlapping semantic chunks            |
+| 🧠   | Embeddings      | Lightweight 384-dim MiniLM             |
+| 📚   | Vector Search   | Local top-k configurable               |
+| ⚡    | Streaming       | Token-by-token chat like ChatGPT       |
+| 🔄   | Knowledge Reset | Clears context per upload              |
+| 🌐   | Multilingual    | Persian ↔ English                      |
+| 📊   | Scalability     | Tested 3000+ chunks                    |
+| 🖥️  | RTL UI          | Full Persian support                   |
 
-**OCR & Document Processing**  
-- Tesseract OCR (Persian language: `fas`)  
-- PyMuPDF (`fitz`) — PDF parsing  
-- Pillow — Image conversion for OCR  
+</div>
 
-**LLM**  
-- Qwen3-32B — Accessed via internal edrac API  
+---
 
-**Other Tools**  
-- Python 3.10+  
-- Docker + docker-compose — Local Weaviate deployment  
-- requests — LLM API communication  
-- Structured logging (for debugging & traceability)
+## 🛠️ Tech Stack
 
-## Design Decisions
+| Layer           | Tools & Libraries                                                | Notes                              |
+| --------------- | ---------------------------------------------------------------- | ---------------------------------- |
+| **Backend**     | FastAPI, Weaviate v4, Sentence-Transformers (`all-MiniLM-L6-v2`) | API & embeddings                   |
+| **Frontend**    | Streamlit                                                        | Interactive chat, streaming, RTL   |
+| **OCR & Docs**  | Tesseract OCR (`fas`), PyMuPDF, Pillow                           | Text extraction & image conversion |
+| **LLM**         | Qwen3-32B                                                        | Via internal edrac API             |
+| **Other Tools** | Python 3.10+, Docker, docker-compose, requests                   | Local deployment & API calls       |
 
-- Used MiniLM (384-dim) for fast and efficient embeddings suitable for local RAG  
-- Implemented overlap-based chunking to preserve semantic continuity  
-- Enforced session-level data reset to prevent cross-file contamination  
-- Separated RTL rendering logic from embedding pipeline to maintain vector quality  
-- Chose local Weaviate for full offline vector storage control  
+---
 
-## Installation & Local Setup
+## 🚀 Installation & Local Setup
 
-1. Clone the Repository
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10+-blue"/>
+  <img src="https://img.shields.io/badge/Docker-ready-green"/>
+</p>
+
+### 1️⃣ Clone Repository
 
 ```bash
 git clone https://github.com/fatmhanafow/RAG.git
 cd RAG
 ```
-2.Create and Activate Virtual Environment
+
+### 2️⃣ Create & Activate Virtual Environment
+
 ```bash
 python -m venv .venv
-
 # Windows
 .venv\Scripts\activate
-
 # Linux / macOS
 source .venv/bin/activate
 ```
-3.Install Dependencies
+
+### 3️⃣ Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
-4.Create .env File (if needed)
+
+### 4️⃣ Optional .env
+
 ```bash
-# .env
-# Add API keys or configuration values if required
+# Add API keys/config if required
 ```
-5.Start Weaviate (Local Vector DB)
+
+### 5️⃣ Start Local Vector DB
+
 ```bash
 docker-compose up -d
 ```
-6.Run Backend
+
+### 6️⃣ Run Backend
+
 ```bash
 uvicorn main:app --reload --port 8000
 ```
-7.Run Frontend (in a separate terminal)
+
+### 7️⃣ Run Frontend
+
 ```bash
 streamlit run app.py
 ```
-Open your browser and navigate to:
-```
-http://localhost:8501
-```
-Example Workflow
 
-1.Upload multiple PDF/TXT files (including scanned Persian PDFs)
-2.System extracts text (OCR if necessary)
-3.Text is chunked and embedded
-4.Chunks are stored in Weaviate
-5.Ask a question in Persian or English
-6.System retrieves top-k relevant chunks
-7.LLM generates a grounded answer
-8.Response is streamed in real time
+🌐 Open `http://localhost:8501`
 
-Future Improvements
+---
 
-Hybrid search (keyword + vector)
-Reranking layer for improved retrieval precision
-Precision@k evaluation metrics
-Caching layer for repeated queries
-Multimodal RAG (image embeddings)
-Persistent multi-session memory
-Full Dockerized deployment (backend + frontend + vector DB)
+## ⚙️ Example Workflow
 
-Why This Project Matters
-This project demonstrates:
+<div align="left">
+1️⃣ Upload PDF/TXT files (scanned Persian supported)<br/>
+2️⃣ OCR & text extraction<br/>
+3️⃣ Chunking & embedding<br/>
+4️⃣ Store chunks in Weaviate<br/>
+5️⃣ Ask a question (Persian/English)<br/>
+6️⃣ Retrieve top-k relevant chunks<br/>
+7️⃣ LLM generates grounded answer<br/>
+8️⃣ Response streamed token-by-token
+</div>
 
-End-to-end RAG system implementation
-Local vector database integration
-Persian OCR handling
-Multilingual semantic retrieval
-Streaming LLM responses
-RTL-safe frontend engineering
-Production-oriented architecture design
+---
+
+## 🔮 Future Improvements
+
+* 🔹 Hybrid search (keyword + vector)
+* 🔹 Reranking for better precision
+* 🔹 Precision@k metrics
+* 🔹 Query caching
+* 🔹 Multimodal RAG (images)
+* 🔹 Persistent multi-session memory
+* 🔹 Full Docker deployment
+
+---
+
+## ❤️ Why This Project Matters
+
+* End-to-end **RAG system implementation**
+* **Local vector DB integration**
+* **Persian OCR handling**
+* **Multilingual semantic retrieval**
+* Streaming **LLM responses**
+* RTL-safe **frontend engineering**
+* Production-oriented **architecture design**
+
+<p align="left">
+  <img src="https://img.shields.io/badge/Powered_by-Python%203.10+-blue"/>
+  <img src="https://img.shields.io/badge/Tech-FastAPI%2C_Streamlit-green"/>
+</p>
+
