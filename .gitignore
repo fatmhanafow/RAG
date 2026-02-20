@@ -13,3 +13,92 @@ __pycache__/
 # weaviate runtime data
 weaviate_data/
 weaviate_data.bak/
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+*.cover
+*.coverage.*
+
+# Distribution / packaging
+*.egg
+*.egg-info/
+dist/
+build/
+*.egg-info/
+.installed.cfg
+*.egg-link
+
+# Logs and temporary files
+*.log
+*.logs
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example          
+.secrets.toml         
+
+# Streamlit-specific
+.streamlit/
+.cache/
+uploaded_files/       
+
+# Vector databases & indexes (خیلی مهم!)
+chroma/               
+chromadb/
+faiss_index/           
+*.faiss
+*.pkl                 
+weaviate_data/
+weaviate_data.bak/
+
+*.db
+*.sqlite
+*.sqlite3
+*.duckdb
+
+# IDE / Editor files
+.vscode/
+.idea/                 # PyCharm / IntelliJ
+*.sublime-*
+*.swp
+*.swo
+*.swn
+
+# OS-specific junk
+.DS_Store              # macOS
+Thumbs.db              # Windows
+ehthumbs.db
+desktop.ini
+
+# Jupyter / notebooks (اگر تست می‌کنی)
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Dependency management extras
+Pipfile.lock
+poetry.lock
+pdm.lock
+uv.lock
+
+# Large binary files or caches from tools
+*.bin
+*.h5                   
+*.onnx
+node_modules/      

@@ -11,5 +11,9 @@ services:
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
       DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_MODULES: ''  # ماژول اضافی نداریم
+      CLUSTER_HOSTNAME: 'node1'
+      REPLICATION_CONFIG_ENABLE: 'false'   # مهم: replication رو غیرفعال کن
+      CONSISTENCY_LEVEL: 'ONE'
     volumes:
       - ./weaviate_data:/var/lib/weaviate

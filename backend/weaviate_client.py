@@ -1,4 +1,5 @@
 # backend/weaviate_client.py
+from urllib import response
 import weaviate
 from weaviate.classes.config import Configure, Property, DataType
 from weaviate.classes.query import MetadataQuery
@@ -49,6 +50,25 @@ class WeaviateVectorDB:
                 "distance": obj.metadata.distance
             } for obj in response.objects
         ]
+        
+
+
+    # def search(self, query_vector: list[float], k: int = 5,filter=None):
+    #     collection = self.client.collections.get(self.class_name)
+    #     query_builder = collection.query.near_vector(
+    #         near_vector=query_vector,
+    #         limit=k,
+    #         return_properties=["text", "source"]
+    # )
+    #     if filter:
+    #         query_builder = query_builder.with_where(filter)
+    #         # response = collection.query.near_vector(
+    #         # near_vector=query_vector,
+    #         # limit=k,
+    #         # return_properties=["text", "source"]
+    #         # )
+    #         response = query_builder.do()
+    #         return [{"text": obj.properties["text"], "source": obj.properties["source"]} for obj in response.objects]
 
     def close(self):
         self.client.close()

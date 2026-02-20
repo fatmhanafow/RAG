@@ -8,3 +8,7 @@ requests
 gradio
 pdfplumber
 python-dotenv
+openai
+pytesseract
+pillow
+python-dotenv
